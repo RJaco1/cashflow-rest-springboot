@@ -18,49 +18,27 @@ public class CategoryType {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int categoryTypeId;
+	private int categorytypeId;
 	
-	@ApiModelProperty(notes = "categoryType must be at least one character long")
+	@ApiModelProperty(notes = "categorytype must be at least one character long")
 	@Size(min = 1, message = "minimum number of characters required is one")
 	@Column(name = "category_type", nullable = false, length = 70)
-	private String categoryType;
-	
-	public int getCategoryTypeId() {
-		return categoryTypeId;
-	}
-	
-	public void setCategoryTypeId(int categoryTypeId) {
-		this.categoryTypeId = categoryTypeId;
-	}
-	
-	public String getCategoryType() {
-		return categoryType;
-	}
-	
-	public void setCategoryType(String categoryType) {
-		this.categoryType = categoryType;
+	private String categorytype;
+
+	public int getCategorytypeId() {
+		return categorytypeId;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + categoryTypeId;
-		return result;
+	public void setCategorytypeId(int categorytypeId) {
+		this.categorytypeId = categorytypeId;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		CategoryType other = (CategoryType) obj;
-		if (categoryTypeId != other.categoryTypeId)
-			return false;
-		return true;
+	public String getCategorytype() {
+		return categorytype;
+	}
+
+	public void setCategorytype(String categorytype) {
+		this.categorytype = categorytype;
 	}
 	
 }

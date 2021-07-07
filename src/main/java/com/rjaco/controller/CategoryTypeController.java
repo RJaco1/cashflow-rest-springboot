@@ -57,7 +57,6 @@ public class CategoryTypeController {
 			EntityModel<CategoryType> resource = EntityModel.of(catType);
 			Link linkTo = linkTo(methodOn(this.getClass()).showListById(id)).withRel("category-resource");
 			resource.add(linkTo);
-			//return new ResponseEntity<CategoryType>(cat, HttpStatus.OK);
 			return resource;
 		}
 	}
@@ -68,7 +67,7 @@ public class CategoryTypeController {
 		CategoryType catType = new CategoryType();
 		catType = service.createData(cat);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(catType.getCategoryTypeId()).toUri();
+				.buildAndExpand(catType.getCategorytypeId()).toUri();
 		return ResponseEntity.created(location).build();
 	}
 

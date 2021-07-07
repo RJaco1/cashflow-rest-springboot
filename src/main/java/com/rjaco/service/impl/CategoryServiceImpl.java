@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rjaco.dao.ICategoryDAO;
-import com.rjaco.dao.ICategorytypeCategoryDAO;
-import com.rjaco.dto.CategorytypeCategoryDTO;
 import com.rjaco.model.Category;
 import com.rjaco.service.ICategoryService;
 
@@ -16,9 +14,6 @@ public class CategoryServiceImpl implements ICategoryService {
 
 	@Autowired
 	private ICategoryDAO dao;
-
-	@Autowired
-	private ICategorytypeCategoryDAO catTypeDao;
 
 	@Override
 	public Category createData(Category t) {
@@ -46,10 +41,8 @@ public class CategoryServiceImpl implements ICategoryService {
 	}
 
 	@Override
-	public Category createData(CategorytypeCategoryDTO categoryDTO) {
-		dao.save(categoryDTO.getCategory());
-		catTypeDao.addCategory(categoryDTO.getCategory().getCategoryId(), categoryDTO.getCategorytype().getCategoryTypeId());
-		return categoryDTO.getCategory();
+	public List<Category> listByCatType(Integer categorytypeId) {
+		return dao.listByCatType(categorytypeId);
 	}
 
 }

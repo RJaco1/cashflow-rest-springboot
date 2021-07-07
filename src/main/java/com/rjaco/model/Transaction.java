@@ -40,10 +40,6 @@ public class Transaction {
 	@JoinColumn(name = "account_id", nullable = false)
 	private Account account;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
-
 	public int getTransactionId() {
 		return transactionId;
 	}
@@ -90,14 +86,6 @@ public class Transaction {
 
 	public void setAccount(Account account) {
 		this.account = account;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 }

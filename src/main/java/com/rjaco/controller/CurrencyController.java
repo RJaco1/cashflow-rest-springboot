@@ -55,7 +55,6 @@ public class CurrencyController {
 			EntityModel<Currency> resource = EntityModel.of(cur);
 			Link linkTo = linkTo(methodOn(this.getClass()).showListById(id)).withRel("Currency-resource");
 			resource.add(linkTo);
-			//return new ResponseEntity<Currency>(cur, HttpStatus.OK);
 			return resource;
 		}
 	}

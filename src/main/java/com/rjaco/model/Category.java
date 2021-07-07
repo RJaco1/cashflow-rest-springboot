@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -19,6 +21,10 @@ public class Category {
 	@Size(min = 1, message = "minimum number of characters required is one")
 	@Column(name = "category_name", nullable = false, length = 70)
 	private String categoryName;
+
+	@ManyToOne
+	@JoinColumn(name = "categorytype_id", nullable = false)
+	private CategoryType categorytype;
 
 	public int getCategoryId() {
 		return categoryId;
@@ -36,25 +42,12 @@ public class Category {
 		this.categoryName = categoryName;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + categoryId;
-		return result;
+	public CategoryType getCategorytype() {
+		return categorytype;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Category other = (Category) obj;
-		if (categoryId != other.categoryId)
-			return false;
-		return true;
+	public void setCategorytype(CategoryType categorytype) {
+		this.categorytype = categorytype;
 	}
+	
 }

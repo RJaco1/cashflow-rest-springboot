@@ -1,8 +1,5 @@
 package com.rjaco.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +7,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.rjaco.dto.TransactionReportDTO;
 import com.rjaco.exception.ModelNotFoundException;
 import com.rjaco.model.Transaction;
 import com.rjaco.service.ITransactionService;
@@ -36,25 +34,20 @@ public class TransactionController {
 	@Autowired
 	private ITransactionService service;
 
-	//Gets all transactions income/expense
+	// Gets all transactions income/expense
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Transaction>> showList() {
-		List<Transaction> tran = new ArrayList<>();
-		tran = service.listData();
-		return new ResponseEntity<List<Transaction>>(tran, HttpStatus.OK);
+	public ResponseEntity<Page<Transaction>> pageable(Pageable pageable) {
+		Page<Transaction> tran = service.pageable(pageable);
+		return new ResponseEntity<Page<Transaction>>(tran, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/{id}")
-	public EntityModel<Transaction> showListById(@PathVariable("id") Integer id) {
-		Transaction tran = new Transaction();
-		tran = service.listDataUsingId(id);
+	public ResponseEntity<Page<Transaction>> listByCatType(@PathVariable("id") Integer id, Pageable pageable) {
+		Page<Transaction> tran = service.listByCatType(id, pageable);
 		if (tran == null) {
 			throw new ModelNotFoundException("ID: " + id);
 		} else {
-			EntityModel<Transaction> resource = EntityModel.of(tran);
-			Link linkTo = linkTo(methodOn(this.getClass()).showListById(id)).withRel("Transaction-Resource");
-			resource.add(linkTo);
-			return resource;
+			return new ResponseEntity<Page<Transaction>>(tran, HttpStatus.OK);
 		}
 	}
 
@@ -66,28 +59,27 @@ public class TransactionController {
 				.buildAndExpand(tran.getTransactionId()).toUri();
 		return ResponseEntity.created(location).build();
 	}
-	
+
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> updateAccount(@Valid @RequestBody Transaction transaction) {
 		service.updateData(transaction);
 		return new ResponseEntity<Object>(HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public void removeAccount(@PathVariable("id") Integer id) {
-		Transaction acc = service.listDataUsingId(id);
-		if (acc == null) {
+		Transaction tran = service.listDataUsingId(id);
+		if (tran == null) {
 			throw new ModelNotFoundException("ID: " + id);
 		} else {
 			service.deleteData(id);
 		}
 	}
 
-	//"id" filters transaction by income or expense - 1 = income / 2 = expense
-	@GetMapping(value = "list/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Transaction>> showTransactionList(@PathVariable("id") Integer id) {
-		List<Transaction> tran = new ArrayList<>();
-		tran = service.transactionsList(id);
-		return new ResponseEntity<List<Transaction>>(tran, HttpStatus.OK);
+	@GetMapping(value = "/transactionReport", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<TransactionReportDTO>> transactionReport() {
+		List<TransactionReportDTO> tran = new ArrayList<>();
+		tran = service.listTransactionReport();
+		return new ResponseEntity<List<TransactionReportDTO>>(tran, HttpStatus.OK);
 	}
 }

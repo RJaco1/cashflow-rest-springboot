@@ -1,10 +1,11 @@
 package com.rjaco.service;
 
-import com.rjaco.dto.CategorytypeCategoryDTO;
+import java.util.List;
+
 import com.rjaco.model.Category;
 
 public interface ICategoryService extends ICRUD<Category> {
-	
-	Category createData(CategorytypeCategoryDTO categoryDTO);
+
+	List<Category> listByCatType(Integer categorytypeId);
 
 }

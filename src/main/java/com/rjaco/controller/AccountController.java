@@ -52,7 +52,6 @@ public class AccountController {
 			EntityModel<Account> resource = EntityModel.of(acc);
 			Link linkTo = linkTo(methodOn(this.getClass()).showListById(id)).withRel("category-resource");
 			resource.add(linkTo);
-			//return new ResponseEntity<CategoryType>(cat, HttpStatus.OK);
 			return resource;
 		}
 	}
