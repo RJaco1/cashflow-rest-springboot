@@ -1,9 +1,11 @@
 package com.rjaco.service.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,11 @@ import com.rjaco.dao.ITransactionDAO;
 import com.rjaco.dto.TransactionReportDTO;
 import com.rjaco.model.Transaction;
 import com.rjaco.service.ITransactionService;
+
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 public class TransactionServiceImpl implements ITransactionService {
@@ -65,6 +72,20 @@ public class TransactionServiceImpl implements ITransactionService {
 			t.add(tDTO);
 		});
 		return t;
+	}
+
+	@Override
+	public byte[] generateReport() {
+		byte[] data = null;
+		try {
+			File file = new ClassPathResource("/reports/transactions.jasper").getFile();
+			JasperPrint print = JasperFillManager.fillReport(file.getPath(), null,
+					new JRBeanCollectionDataSource(this.listTransactionReport()));
+			data = JasperExportManager.exportReportToPdf(print);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return data;
 	}
 
 }

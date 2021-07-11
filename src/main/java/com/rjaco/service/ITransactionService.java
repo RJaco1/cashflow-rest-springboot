@@ -13,6 +13,8 @@ public interface ITransactionService extends ICRUD<Transaction> {
 	Page<Transaction> listByCatType(Integer id, Pageable pageable);
 
 	Page<Transaction> pageable(Pageable pageable);
-	
+
 	List<TransactionReportDTO> listTransactionReport();
+
+	byte[] generateReport();
 }
