@@ -1,6 +1,7 @@
 package com.rjaco.service.impl;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,8 +79,8 @@ public class TransactionServiceImpl implements ITransactionService {
 	public byte[] generateReport() {
 		byte[] data = null;
 		try {
-			File file = new ClassPathResource("/reports/transactions.jasper").getFile();
-			JasperPrint print = JasperFillManager.fillReport(file.getPath(), null,
+			InputStream file = new ClassPathResource("/reports/transactions.jasper").getInputStream();
+			JasperPrint print = JasperFillManager.fillReport(file, null,
 					new JRBeanCollectionDataSource(this.listTransactionReport()));
 			data = JasperExportManager.exportReportToPdf(print);
 		} catch (Exception e) {

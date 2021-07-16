@@ -87,6 +87,10 @@ public class TransactionController {
 	public ResponseEntity<byte[]> generateReport() {
 		byte[] data = null;
 		data = service.generateReport();
-		return new ResponseEntity<byte[]>(data, HttpStatus.OK);
+		if (data == null) {
+			throw new ModelNotFoundException("data is null");
+		} else {
+			return new ResponseEntity<byte[]>(data, HttpStatus.OK);
+		}
 	}
 }
