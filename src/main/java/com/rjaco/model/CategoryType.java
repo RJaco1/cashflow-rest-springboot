@@ -13,7 +13,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "Category information")
 @Entity
-@Table(name = "category_type")
+@Table(name = "CATEGORIES_TYPE")
 public class CategoryType {
 	
 	@Id
