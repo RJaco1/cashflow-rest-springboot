@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "category")
+@Table(name = "CATEGORIES")
 public class Category {
 
 	@Id
@@ -25,6 +25,10 @@ public class Category {
 	@ManyToOne
 	@JoinColumn(name = "categorytype_id", nullable = false)
 	private CategoryType categorytype;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private UserAccount user;
 
 	public int getCategoryId() {
 		return categoryId;
@@ -48,6 +52,14 @@ public class Category {
 
 	public void setCategorytype(CategoryType categorytype) {
 		this.categorytype = categorytype;
+	}
+
+	public UserAccount getUser() {
+		return user;
+	}
+
+	public void setUser(UserAccount user) {
+		this.user = user;
 	}
 	
 }

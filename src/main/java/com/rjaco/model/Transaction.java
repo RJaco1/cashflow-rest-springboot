@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 @Entity
-@Table(name = "transaction")
+@Table(name = "TRANSACTIONS")
 public class Transaction {
 
 	@Id
@@ -25,6 +25,7 @@ public class Transaction {
 	@Column(name = "amount", nullable = false)
 	private double amount;
 
+	@Column(name = "transaction_date")
 	@JsonSerialize(using = ToStringSerializer.class)
 	private LocalDateTime date;
 
@@ -39,6 +40,10 @@ public class Transaction {
 	@ManyToOne
 	@JoinColumn(name = "account_id", nullable = false)
 	private Account account;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private UserAccount user;
 
 	public int getTransactionId() {
 		return transactionId;
@@ -86,6 +91,14 @@ public class Transaction {
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public UserAccount getUser() {
+		return user;
+	}
+
+	public void setUser(UserAccount user) {
+		this.user = user;
 	}
 
 }

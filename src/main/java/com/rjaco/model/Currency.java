@@ -5,10 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "currency")
+@Table(name = "CURRENCIES")
 public class Currency {
 
 	@Id
@@ -17,6 +19,10 @@ public class Currency {
 	
 	@Column(name = "currency", nullable = false, length = 10)
 	private String currency;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private UserAccount user;
 
 	public int getCurrencyId() {
 		return currencyId;
@@ -32,6 +38,14 @@ public class Currency {
 
 	public void setCurrency(String currency) {
 		this.currency = currency;
+	}
+
+	public UserAccount getUser() {
+		return user;
+	}
+
+	public void setUser(UserAccount user) {
+		this.user = user;
 	}
 	
 	

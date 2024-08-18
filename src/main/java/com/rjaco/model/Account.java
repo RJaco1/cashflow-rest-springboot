@@ -5,10 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "account")
+@Table(name = "ACCOUNTS")
 public class Account {
 
 	@Id
@@ -18,6 +20,10 @@ public class Account {
 	@Column(name = "account_name", nullable = false, length = 70)
 	private String accountName;
 
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private UserAccount user;
+	
 	public int getAccountId() {
 		return accountId;
 	}
@@ -33,6 +39,13 @@ public class Account {
 	public void setAccountName(String accountName) {
 		this.accountName = accountName;
 	}
-	
+
+	public UserAccount getUser() {
+		return user;
+	}
+
+	public void setUser(UserAccount user) {
+		this.user = user;
+	}
 	
 }
