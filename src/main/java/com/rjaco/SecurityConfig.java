@@ -1,6 +1,6 @@
 package com.rjaco;
 
-//import javax.activation.DataSource;
+import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,8 +18,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 @Configuration
 @EnableWebSecurity
@@ -35,8 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.security-realm}")
     private String securityRealm;
 
-    // @Autowired
-    // private DataSource dataSource;
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -66,7 +66,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement(management -> management
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(basic -> basic
-                        .realmName(securityRealm)).csrf(csrf -> csrf.disable());
+                        .realmName(securityRealm))
+                .csrf(csrf -> csrf.disable());
     }
 
     @Bean
@@ -78,8 +79,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public TokenStore tokenStore() {
-        return new JwtTokenStore(accessTokenConverter());
-        // return new JdbcTokenStore(this.dataSource);
+        // return new JwtTokenStore(accessTokenConverter());
+        return new JdbcTokenStore(this.dataSource);
     }
 
     @Bean

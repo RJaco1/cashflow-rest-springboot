@@ -35,6 +35,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                         .antMatchers("/categoriesType/**").authenticated()
                         .antMatchers("/categories/**").authenticated()
                         .antMatchers("/currencies/**").authenticated()
-                        .antMatchers("/transactions/**").authenticated());
+                        .antMatchers("/transactions/**").authenticated()
+                        .antMatchers("/users/**").authenticated());
     }
 }
