@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @RequestMapping("/users")
 public class UserAccountController {
+
     @Resource(name = "tokenServices")
     private ConsumerTokenServices tokenServices;
 
