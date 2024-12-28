@@ -1,4 +1,4 @@
-package com.rjaco;
+package com.rjaco.config.security;
 
 import javax.sql.DataSource;
 
@@ -13,12 +13,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 @Configuration
@@ -27,10 +27,10 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${security.signing-key}")
-    private String sifningKey;
+    private String signingKey;
 
-    @Value("${security.encoding-strength}")
-    private Integer encodingStrength;
+    // @Value("${security.encoding-strength}")
+    // private Integer encodingStrength;
 
     @Value("${security.security-realm}")
     private String securityRealm;
@@ -46,8 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder;
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -64,23 +63,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement(management -> management
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(basic -> basic
                         .realmName(securityRealm))
-                .csrf(csrf -> csrf.disable());
+                .csrf(AbstractHttpConfigurer::disable);
     }
+
+    /*
+     * @Bean
+     * public JwtAccessTokenConverter accessTokenConverter() {
+     * JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+     * converter.setSigningKey(signingKey);
+     * return converter;
+     * }
+     */
 
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
-        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey(sifningKey);
+        CustomJwtAccessTokenConverter converter = new CustomJwtAccessTokenConverter();
+        converter.setSigningKey(signingKey); // Replace with your actual signing key
         return converter;
     }
 
     @Bean
     public TokenStore tokenStore() {
         // return new JwtTokenStore(accessTokenConverter());
-        return new JdbcTokenStore(this.dataSource);
+        return new JdbcTokenStores(this.dataSource);
     }
 
     @Bean

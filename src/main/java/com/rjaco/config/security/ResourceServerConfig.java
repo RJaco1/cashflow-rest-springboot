@@ -1,4 +1,4 @@
-package com.rjaco;
+package com.rjaco.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +30,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .authenticationEntryPoint(new AuthException()))
                 .requestMatchers(t -> t.anyRequest())
                 .authorizeRequests(requests -> requests
-                        .antMatchers("/v2/api-docs/**").authenticated()
+                        //.antMatchers("/v2/api-docs/**").authenticated()
                         .antMatchers("/accounts/**").authenticated()
                         .antMatchers("/categoriesType/**").authenticated()
                         .antMatchers("/categories/**").authenticated()
