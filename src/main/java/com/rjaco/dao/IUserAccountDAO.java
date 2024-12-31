@@ -6,6 +6,6 @@ import com.rjaco.model.UserAccount;
 
 public interface IUserAccountDAO extends JpaRepository<UserAccount, Integer> {
 
-    UserAccount findOneByUsernameOrEmail(String username, String email);
+    UserAccount findOneByUsername(String username);
 
 }

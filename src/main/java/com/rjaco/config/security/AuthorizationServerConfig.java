@@ -1,4 +1,4 @@
-package com.rjaco;
+package com.rjaco.config.security;
 
 import java.util.Arrays;
 

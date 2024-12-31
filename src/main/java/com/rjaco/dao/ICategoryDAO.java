@@ -13,4 +13,7 @@ public interface ICategoryDAO extends JpaRepository<Category, Integer>{
 	@Query("FROM Category c WHERE c.categorytype.categorytypeId = :categorytypeId")
 	List<Category> listByCatType(@Param("categorytypeId") Integer categorytypeId);
 
+	@Query("FROM Category c WHERE c.user.userId = :userId")
+	List<Category> listCatByUserId(@Param("userId") Integer userId);
+
 }
