@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.rjaco.dto.AccountDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
@@ -54,6 +55,13 @@ public class AccountController {
 			resource.add(linkTo);
 			return resource;
 		}
+	}
+
+	@GetMapping(value = "username/{username}")
+	public ResponseEntity<List<AccountDTO>> listAccByUsername(@PathVariable("username") String username) {
+		List<AccountDTO> acc = new ArrayList<>();
+		acc = service.listAccByUsername(username);
+		return new ResponseEntity<List<AccountDTO>>(acc, HttpStatus.OK);
 	}
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
