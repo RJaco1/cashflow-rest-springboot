@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.rjaco.dto.AccountDTO;
+import com.rjaco.dto.CurrencyDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
@@ -57,6 +59,13 @@ public class CurrencyController {
 			resource.add(linkTo);
 			return resource;
 		}
+	}
+
+	@GetMapping(value = "username/{username}")
+	public ResponseEntity<List<CurrencyDTO>> listAccByUsername(@PathVariable("username") String username) {
+		List<CurrencyDTO> cur = new ArrayList<>();
+		cur = service.listCurrByUsername(username);
+		return new ResponseEntity<List<CurrencyDTO>>(cur, HttpStatus.OK);
 	}
 
 	// adding or creating Currency type

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.rjaco.dto.CategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,6 +49,13 @@ public class CategoryController {
 		} else {
 			return new ResponseEntity<List<Category>>(cat, HttpStatus.OK);
 		}
+	}
+
+	@GetMapping(value = "username/{username}")
+	public ResponseEntity<List<CategoryDTO>> listCatByUsername(@PathVariable("username") String username) {
+		List<CategoryDTO> cat = new ArrayList<>();
+		cat = service.listCatByUsername(username);
+		return new ResponseEntity<List<CategoryDTO>>(cat, HttpStatus.OK);
 	}
 
 	@Transactional

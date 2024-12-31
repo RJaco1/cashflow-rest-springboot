@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.rjaco.dto.CategoryDTO;
+import com.rjaco.dto.TransactionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +53,13 @@ public class TransactionController {
 		}
 	}
 
+	@GetMapping(value = "username/{username}")
+	public ResponseEntity<List<TransactionDTO>> listCatByUsername(@PathVariable("username") String username) {
+		List<TransactionDTO> tran = new ArrayList<>();
+		tran = service.listTranByUsername(username);
+		return new ResponseEntity<List<TransactionDTO>>(tran, HttpStatus.OK);
+	}
+
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> addTransaction(@Valid @RequestBody Transaction transaction) {
 		Transaction tran = new Transaction();
@@ -76,14 +85,14 @@ public class TransactionController {
 		}
 	}
 
-	@GetMapping(value = "/transactionReport", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/transaction-report", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<TransactionReportDTO>> transactionReport() {
 		List<TransactionReportDTO> tran = new ArrayList<>();
 		tran = service.listTransactionReport();
 		return new ResponseEntity<List<TransactionReportDTO>>(tran, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/generateReport", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@GetMapping(value = "/generate-report", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public ResponseEntity<byte[]> generateReport() {
 		byte[] data = null;
 		data = service.generateReport();

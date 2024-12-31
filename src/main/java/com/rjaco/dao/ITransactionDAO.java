@@ -2,6 +2,7 @@ package com.rjaco.dao;
 
 import java.util.List;
 
+import com.rjaco.model.Account;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,9 @@ public interface ITransactionDAO extends JpaRepository<Transaction, Integer> {
 
 	@Query("FROM Transaction t WHERE t.category.categorytype.categorytypeId = :categorytypeId")
 	Page<Transaction> listByCatType(@Param("categorytypeId") Integer categorytypeId, Pageable pageable);
+
+	@Query("FROM Transaction a WHERE a.user.userId = :userId")
+	List<Transaction> listTranByUserId(@Param("userId") Integer userId);
 
 	@Query(value = "select expense, sum(income - expense) OVER(ORDER BY date\r\n"
 			+ "     ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as income, date from\r\n"

@@ -4,10 +4,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rjaco.dao.IUserAccountDAO;
+import com.rjaco.dto.CategoryDTO;
+import com.rjaco.dto.TransactionDTO;
+import com.rjaco.model.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.rjaco.dao.ITransactionDAO;
@@ -25,6 +30,9 @@ public class TransactionServiceImpl implements ITransactionService {
 
 	@Autowired
 	private ITransactionDAO dao;
+
+	@Autowired
+	private IUserAccountDAO userDAO;
 
 	@Override
 	public Transaction createData(Transaction t) {
@@ -59,6 +67,36 @@ public class TransactionServiceImpl implements ITransactionService {
 	@Override
 	public Page<Transaction> pageable(Pageable pageable) {
 		return dao.findAll(pageable);
+	}
+
+	@Override
+	public List<TransactionDTO> listTranByUsername(String username) {
+
+		UserAccount user = userDAO.findOneByUsername(username);
+
+		if (user == null) {
+			throw new UsernameNotFoundException(String.format("User does not exist", username));
+		}
+		List<TransactionDTO> tranDto = new ArrayList<>();
+		dao.listTranByUserId(user.getUserId()).forEach(transaction -> {
+			tranDto.add(new TransactionDTO(
+					transaction.getTransactionId(),
+					transaction.getAmount(),
+					transaction.getDate(),
+					transaction.getCategory().getCategoryId(),
+					transaction.getCategory().getCategoryName(),
+					transaction.getCategory().getCategorytype(),
+					transaction.getCurrency().getCurrencyId(),
+					transaction.getCurrency().getCurrency(),
+					transaction.getAccount().getAccountId(),
+					transaction.getAccount().getAccountName(),
+					transaction.getUser().getUserId(),
+					transaction.getUser().getUsername(),
+					transaction.getUser().getEmail()
+			));
+		});
+
+		return tranDto;
 	}
 
 	@Override
