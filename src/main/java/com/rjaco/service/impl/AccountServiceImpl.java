@@ -39,17 +39,32 @@ public class AccountServiceImpl implements IAccountService{
 	}
 
 	@Override
-	public Account listDataUsingId(int id) {
+	public Account findData(int id) {
 		return dao.findById(id).orElse(null);
 	}
 
 	@Override
-	public List<Account> listData() {
+	public List<Account> getData() {
 		return dao.findAll();
 	}
 
 	@Override
-	public List<AccountDTO> listAccByUsername(String username) {
+	public List<AccountDTO> getDataDTO() {
+		List<AccountDTO> accDto = new ArrayList<>();
+		dao.findAll().forEach(account -> {
+			accDto.add(new AccountDTO(
+					account.getAccountId(),
+					account.getAccountName(),
+					account.getUser().getUserId(),
+					account.getUser().getUsername(),
+					account.getUser().getEmail()
+			));
+		});
+		return accDto;
+	}
+
+	@Override
+	public List<AccountDTO> findAccuntsByUsername(String username) {
 
 		UserAccount user = userDAO.findOneByUsername(username);
 
@@ -58,7 +73,7 @@ public class AccountServiceImpl implements IAccountService{
 		}
 
 		List<AccountDTO> accDto = new ArrayList<>();
-		dao.listAccByUserId(user.getUserId()).forEach(account -> {
+		dao.findAccountsByUserId(user.getUserId()).forEach(account -> {
 			accDto.add(new AccountDTO(
 					account.getAccountId(),
 					account.getAccountName(),

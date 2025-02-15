@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/users")
-public class UserAccountController {
+public class RevokeTokensController {
 
     @Resource(name = "tokenServices")
     private ConsumerTokenServices tokenServices;
 
-    @GetMapping("/revoke/{tokenId:.*}")
+    @GetMapping("/{tokenId:.*}/revoke")
     public void revokeToken(@PathVariable("tokenId") String token) {
         tokenServices.revokeToken(token);
     }

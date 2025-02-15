@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface ICurrencyService extends ICRUD<Currency> {
 
-    List<CurrencyDTO> listCurrByUsername(String username);
+    List<CurrencyDTO> getDataDTO();
+
+    List<CurrencyDTO> findCurrenciesByUsername(String username);
 
 }

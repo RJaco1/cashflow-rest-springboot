@@ -11,6 +11,6 @@ import java.util.List;
 public interface IAccountDAO extends JpaRepository<Account, Integer> {
 
     @Query("FROM Account a WHERE a.user.userId = :userId")
-    List<Account> listAccByUserId(@Param("userId") Integer userId);
+    List<Account> findAccountsByUserId(@Param("userId") Integer userId);
 
 }

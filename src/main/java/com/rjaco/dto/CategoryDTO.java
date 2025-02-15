@@ -5,15 +5,15 @@ import com.rjaco.model.CategoryType;
 public class CategoryDTO {
     private int categoryId;
     private String categoryName;
-    private CategoryType categorytype;
     private int userId;
     private String username;
     private String email;
+    private CategoryType categorytype;
 
     public CategoryDTO() {
     }
 
-    public CategoryDTO(int categoryId, String categoryName, CategoryType categorytype, int userId, String username, String email) {
+    public CategoryDTO(int categoryId, String categoryName, int userId, String username, String email, CategoryType categorytype) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.categorytype = categorytype;

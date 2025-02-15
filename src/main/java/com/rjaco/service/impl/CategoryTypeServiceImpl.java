@@ -31,12 +31,12 @@ public class CategoryTypeServiceImpl implements ICategoryTypeService {
 	}
 
 	@Override
-	public CategoryType listDataUsingId(int id) {
+	public CategoryType findData(int id) {
 		return dao.findById(id).orElse(null);
 	}
 
 	@Override
-	public List<CategoryType> listData() {
+	public List<CategoryType> getData() {
 		return dao.findAll();
 	}
 

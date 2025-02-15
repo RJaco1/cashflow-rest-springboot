@@ -39,22 +39,38 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public Category listDataUsingId(int id) {
+    public Category findData(int id) {
         return dao.findById(id).orElse(null);
     }
 
     @Override
-    public List<Category> listData() {
+    public List<Category> getData() {
         return dao.findAll();
     }
 
     @Override
-    public List<Category> listByCatType(Integer categorytypeId) {
-        return dao.listByCatType(categorytypeId);
+    public List<Category> findCategoriestByCatType(Integer categorytypeId) {
+        return dao.findCategoriesByCatType(categorytypeId);
     }
 
     @Override
-    public List<CategoryDTO> listCatByUsername(String username) {
+    public List<CategoryDTO> getDataDTO() {
+        List<CategoryDTO> catDto = new ArrayList<>();
+        dao.findAll().forEach(category -> {
+            catDto.add(new CategoryDTO(
+                    category.getCategoryId(),
+                    category.getCategoryName(),
+                    category.getUser().getUserId(),
+                    category.getUser().getUsername(),
+                    category.getUser().getEmail(),
+                    category.getCategorytype())
+            );
+        });
+        return catDto;
+    }
+
+    @Override
+    public List<CategoryDTO> findCategoriesByUsername(String username) {
 
         UserAccount user = userDAO.findOneByUsername(username);
 
@@ -63,16 +79,102 @@ public class CategoryServiceImpl implements ICategoryService {
         }
 
         List<CategoryDTO> catDto = new ArrayList<>();
-        dao.listCatByUserId(user.getUserId()).forEach(category -> {
+        dao.findCategoriesByUserId(user.getUserId()).forEach(category -> {
             catDto.add(new CategoryDTO(
                     category.getCategoryId(),
                     category.getCategoryName(),
-                    category.getCategorytype(),
                     category.getUser().getUserId(),
                     category.getUser().getUsername(),
-                    category.getUser().getEmail())
+                    category.getUser().getEmail(),
+                    category.getCategorytype())
             );
         });
         return catDto;
+    }
+
+    @Override
+    public List<CategoryDTO> findUserCategoriestByCatType(String username, Integer categorytypeId) {
+
+        UserAccount user = userDAO.findOneByUsername(username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("User does not exist", username));
+        }
+        List<CategoryDTO> catDto = new ArrayList<>();
+        dao.findUserCategoriestByCatType(user.getUserId(), categorytypeId).forEach(category -> {
+            catDto.add(new CategoryDTO(
+                    category.getCategoryId(),
+                    category.getCategoryName(),
+                    category.getUser().getUserId(),
+                    category.getUser().getUsername(),
+                    category.getUser().getEmail(),
+                    category.getCategorytype())
+            );
+        });
+
+        return catDto;
+    }
+
+    @Override
+    public CategoryDTO findUserCategory(String username, Integer id) {
+
+        UserAccount user = userDAO.findOneByUsername(username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("User does not exist", username));
+        }
+
+        Category cat = dao.findUserCategory(user.getUserId(), id);
+
+        return new CategoryDTO(
+                cat.getCategoryId(),
+                cat.getCategoryName(),
+                cat.getUser().getUserId(),
+                cat.getUser().getUsername(),
+                cat.getUser().getEmail(),
+                cat.getCategorytype());
+    }
+
+    @Override
+    public Category createUserCategory(CategoryDTO categoryDTO) {
+        UserAccount user = userDAO.findOneByUsername(categoryDTO.getUsername());
+
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("User does not exist", categoryDTO.getUsername()));
+        }
+
+        Category cat = new Category();
+        cat.setCategoryName(categoryDTO.getCategoryName());
+        cat.setCategorytype(categoryDTO.getCategorytype());
+        cat.setUser(user);
+
+        return dao.save(cat);
+    }
+
+    @Override
+    public Category updateUserCategory(CategoryDTO categoryDTO) {
+        UserAccount user = userDAO.findOneByUsername(categoryDTO.getUsername());
+
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("User does not exist", categoryDTO.getUsername()));
+        }
+        Category cat = new Category();
+        cat.setCategoryId(categoryDTO.getCategoryId());
+        cat.setCategoryName(categoryDTO.getCategoryName());
+        cat.setCategorytype(categoryDTO.getCategorytype());
+        cat.setUser(user);
+
+        return dao.save(cat);
+    }
+
+    @Override
+    public void deleteUserCategory(String username, Integer id) {
+        UserAccount user = userDAO.findOneByUsername(username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("User does not exist", username));
+        }
+
+        dao.deleteById(id);
     }
 }
