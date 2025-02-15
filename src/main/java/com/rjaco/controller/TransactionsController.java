@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import com.rjaco.dto.CategoryDTO;
 import com.rjaco.dto.TransactionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,14 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rjaco.dto.TransactionReportDTO;
@@ -31,33 +23,26 @@ import com.rjaco.service.ITransactionService;
 
 @RestController
 @RequestMapping("/transactions")
-public class TransactionController {
+public class TransactionsController {
 
 	@Autowired
 	private ITransactionService service;
 
 	// Gets all transactions income/expense
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Page<Transaction>> pageable(Pageable pageable) {
-		Page<Transaction> tran = service.pageable(pageable);
-		return new ResponseEntity<Page<Transaction>>(tran, HttpStatus.OK);
+	public ResponseEntity<Page<TransactionDTO>> getTransactions(@RequestParam(required = false) String username, Pageable pageable) {
+		Page<TransactionDTO> tran = username == null ? service.getDataDTO(pageable) : service.findTransactionsByUsername(username, pageable);
+		return new ResponseEntity<Page<TransactionDTO>>(tran, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Page<Transaction>> listByCatType(@PathVariable("id") Integer id, Pageable pageable) {
-		Page<Transaction> tran = service.listByCatType(id, pageable);
+	public ResponseEntity<Page<Transaction>> findTransactionById(@PathVariable("id") Integer id, Pageable pageable) {
+		Page<Transaction> tran = service.findByCategoryType(id, pageable);
 		if (tran == null) {
 			throw new ModelNotFoundException("ID: " + id);
 		} else {
 			return new ResponseEntity<Page<Transaction>>(tran, HttpStatus.OK);
 		}
-	}
-
-	@GetMapping(value = "username/{username}")
-	public ResponseEntity<List<TransactionDTO>> listCatByUsername(@PathVariable("username") String username) {
-		List<TransactionDTO> tran = new ArrayList<>();
-		tran = service.listTranByUsername(username);
-		return new ResponseEntity<List<TransactionDTO>>(tran, HttpStatus.OK);
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -77,7 +62,7 @@ public class TransactionController {
 
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public void removeAccount(@PathVariable("id") Integer id) {
-		Transaction tran = service.listDataUsingId(id);
+		Transaction tran = service.findData(id);
 		if (tran == null) {
 			throw new ModelNotFoundException("ID: " + id);
 		} else {

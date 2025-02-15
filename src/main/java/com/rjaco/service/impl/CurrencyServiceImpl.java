@@ -41,17 +41,33 @@ public class CurrencyServiceImpl implements ICurrencyService {
     }
 
     @Override
-    public Currency listDataUsingId(int id) {
+    public Currency findData(int id) {
         return dao.findById(id).orElse(null);
     }
 
     @Override
-    public List<Currency> listData() {
+    public List<Currency> getData() {
         return dao.findAll();
     }
 
     @Override
-    public List<CurrencyDTO> listCurrByUsername(String username) {
+    public List<CurrencyDTO> getDataDTO() {
+        List<CurrencyDTO> currDto = new ArrayList<>();
+        dao.findAll().forEach(currency -> {
+            currDto.add(new CurrencyDTO(
+                    currency.getCurrencyId(),
+                    currency.getCurrency(),
+                    currency.getUser().getUserId(),
+                    currency.getUser().getUsername(),
+                    currency.getUser().getEmail()
+            ));
+        });
+
+        return currDto;
+    }
+
+    @Override
+    public List<CurrencyDTO> findCurrenciesByUsername(String username) {
         UserAccount user = userDAO.findOneByUsername(username);
 
         if (user == null) {

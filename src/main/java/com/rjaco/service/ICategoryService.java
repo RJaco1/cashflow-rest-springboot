@@ -4,12 +4,23 @@ import java.util.List;
 
 import com.rjaco.dto.CategoryDTO;
 import com.rjaco.model.Category;
-import org.springframework.data.repository.query.Param;
 
 public interface ICategoryService extends ICRUD<Category> {
 
-	List<Category> listByCatType(Integer categorytypeId);
+    List<Category> findCategoriestByCatType(Integer categorytypeId);
 
-	List<CategoryDTO> listCatByUsername(String username);
+    List<CategoryDTO> getDataDTO();
+
+    List<CategoryDTO> findCategoriesByUsername(String username);
+
+    List<CategoryDTO> findUserCategoriestByCatType(String username, Integer categorytypeId);
+
+    CategoryDTO findUserCategory(String username, Integer id);
+
+    Category createUserCategory(CategoryDTO categoryDTO);
+
+    Category updateUserCategory(CategoryDTO categoryDTO);
+
+    void deleteUserCategory(String username, Integer id);
 
 }

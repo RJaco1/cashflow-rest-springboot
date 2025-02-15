@@ -4,7 +4,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -16,14 +15,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rjaco.exception.ModelNotFoundException;
@@ -32,40 +24,32 @@ import com.rjaco.service.IAccountService;
 
 @RestController
 @RequestMapping("/accounts")
-public class AccountController {
+public class AccountsController {
 
 	@Autowired
 	private IAccountService service;
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Account>> showList() {
-		List<Account> acc = new ArrayList<>();
-		acc = service.listData();
-		return new ResponseEntity<List<Account>>(acc, HttpStatus.OK);
+	public ResponseEntity<List<AccountDTO>> getAccounts(@RequestParam(required = false) String username) {
+		List<AccountDTO> acc = username == null ? service.getDataDTO() : service.findAccuntsByUsername(username);
+		return new ResponseEntity<>(acc, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public EntityModel<Account> showListById(@PathVariable("id") Integer id) {
-		Account acc = service.listDataUsingId(id);
+	public EntityModel<Account> findAccountById(@PathVariable("id") Integer id) {
+		Account acc = service.findData(id);
 		if (acc == null) {
 			throw new ModelNotFoundException("ID: " + id);
 		} else {
 			EntityModel<Account> resource = EntityModel.of(acc);
-			Link linkTo = linkTo(methodOn(this.getClass()).showListById(id)).withRel("category-resource");
+			Link linkTo = linkTo(methodOn(this.getClass()).findAccountById(id)).withRel("category-resource");
 			resource.add(linkTo);
 			return resource;
 		}
 	}
-
-	@GetMapping(value = "username/{username}")
-	public ResponseEntity<List<AccountDTO>> listAccByUsername(@PathVariable("username") String username) {
-		List<AccountDTO> acc = new ArrayList<>();
-		acc = service.listAccByUsername(username);
-		return new ResponseEntity<List<AccountDTO>>(acc, HttpStatus.OK);
-	}
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> addAccount(@Valid @RequestBody Account account) {
+	public ResponseEntity<Object> createAccount(@Valid @RequestBody Account account) {
 		Account acc = new Account();
 		acc = service.createData(account);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -81,7 +65,7 @@ public class AccountController {
 	
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public void removeAccount(@PathVariable("id") Integer id) {
-		Account acc = service.listDataUsingId(id);
+		Account acc = service.findData(id);
 		if (acc == null) {
 			throw new ModelNotFoundException("ID: " + id);
 		} else {
